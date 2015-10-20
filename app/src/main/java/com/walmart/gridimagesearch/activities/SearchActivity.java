@@ -46,23 +46,14 @@ public class SearchActivity extends AppCompatActivity {
     private String site;
     private int sizePerPage = 8;
     private View view;
+    JSONArray imageResultJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setupViews();
-        gvResults.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to your AdapterView
-                Log.i("Info", "Current page is " + page);
-                customLoadMoreDataFromApi(page);
-                // or customLoadMoreDataFromApi(totalItemsCount);
-                return true; // ONLY if more data is actually being loaded; false otherwise.
-            }
-        });
+
         //Create the data source
         imageResults = new ArrayList<ImageResult>();
         //Attaches the data source to an adapter
@@ -86,7 +77,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 String searchUrl = composeSearchUrl(0, query);
                 Log.d("DEBUG", searchUrl);
-                sendHttpClient(searchUrl);
+                sendHttpClient(searchUrl,false);
                 return true;
             }
 
@@ -112,19 +103,31 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                Log.i("Info", "Current page is " + page);
+                if (page < 8)
+                   customLoadMoreDataFromApi(page);
+                // or customLoadMoreDataFromApi(totalItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
     }
 
     private void customLoadMoreDataFromApi(int page) {
         String query = etSearch.getText().toString();
-        String searchUrl = composeSearchUrl(0, query);
-        sendHttpClient(searchUrl);
+        String searchUrl = composeSearchUrl(page, query);
+        sendHttpClient(searchUrl, true);
     }
 
     public void onImageSearch(View view) {
         String query = etSearch.getText().toString();
         String searchUrl = composeSearchUrl(0, query);
         Log.d("DEBUG", searchUrl);
-        sendHttpClient(searchUrl);
+        sendHttpClient(searchUrl, false);
     }
 
     @Override
@@ -166,7 +169,7 @@ public class SearchActivity extends AppCompatActivity {
         return searchUrl.toString();
     }
 
-    private void sendHttpClient(String searchUrl) {
+    private void sendHttpClient(String searchUrl, final boolean loadMore) {
         if (!isNetworkAvailable()) {
             Log.e("ERROR", "Network is not available");
             Toast.makeText(this, "Network is not available", Toast.LENGTH_SHORT);
@@ -177,15 +180,14 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("DEBUG", response.toString());
-                JSONArray imageResultJson = null;
                 try {
                     imageResultJson = response.getJSONObject("responseData").getJSONArray("results");
-                    imageResults.clear();  //clear the existing image from the array
+                    if (!loadMore)
+                      imageResults.clear();  //clear the existing image from the array
                     aImageResults.addAll(ImageResult.fromJSONARRAY(imageResultJson));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Log.i("INFO", imageResults.toString());
             }
 
             @Override
