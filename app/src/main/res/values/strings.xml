@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">GridImageSearch</string>
+    <string name="search">Search</string>
+    <string name="search_prompt">Enter Search Query</string>
+    <string name="image_title">Image Title</string>
+    <string name="setting">Settings</string>
+    <string name="advanced_search">Advanced search options:</string>
+    <string name="image_size">Image Size</string>
+    <string name="color_filter">Color Filter</string>
+    <string name="image_type">Image Type</string>
+    <string name="site_filter">Site Filter</string>
+    <string name="save">Save</string>
+    <string-array name="size_array">
+        <item>small</item>
+        <item>medium</item>
+        <item>large</item>
+        <item>extra-large</item>
+    </string-array>
+    <string-array name="color_array">
+        <item>black</item>
+        <item>blue</item>
+        <item>brown</item>
+        <item>gray</item>
+        <item>green</item>
+        <item>orange</item>
+        <item>pink</item>
+        <item>purple</item>
+        <item>red</item>
+        <item>teal</item>
+        <item>white</item>
+        <item>yellow</item>
+    </string-array>
+    <string-array name="type_array">
+        <item>faces</item>
+        <item>photo</item>
+        <item>clip art</item>
+        <item>line art</item>
+    </string-array>
+    <string-array name="site_array">
+        <item>espn.com</item>
+        <item>twitter.com</item>
+        <item>en.wikipedia.org</item>
+        <item>photobucket.com</item>
+        <item>www.youtube.com</item>
+        <item>www.petfinder.com</item>
+        <item>www.facebook.com</item>
+    </string-array>
+    <string name="cancel">Cancel</string>
+    <integer name="column_count">3</integer>
+</resources>
